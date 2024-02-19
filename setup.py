@@ -26,6 +26,7 @@ setup(
     'nltk>=3.2.4',
     'inflect>=0.3.1',
     'distance>=0.1.3',
+    'cmudict>=1.0.18',
   ],
   license='Apache Software License',
   include_package_data=True

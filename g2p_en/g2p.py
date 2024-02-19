@@ -5,7 +5,8 @@ By kyubyong park(kbpark.linguist@gmail.com) and Jongseok Kim(https://github.com/
 https://www.github.com/kyubyong/g2p
 '''
 from nltk import pos_tag
-from nltk.corpus import cmudict
+# from nltk.corpus import cmudict
+import cmudict
 import nltk
 from nltk.tokenize import TweetTokenizer
 word_tokenize = TweetTokenizer().tokenize
@@ -21,10 +22,10 @@ try:
     nltk.data.find('taggers/averaged_perceptron_tagger.zip')
 except LookupError:
     nltk.download('averaged_perceptron_tagger')
-try:
-    nltk.data.find('corpora/cmudict.zip')
-except LookupError:
-    nltk.download('cmudict')
+# try:
+#     nltk.data.find('corpora/cmudict.zip')
+# except LookupError:
+#     nltk.download('cmudict')
 
 dirname = os.path.dirname(__file__)
 
