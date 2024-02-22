@@ -176,7 +176,8 @@ class G2p(object):
             elif word in self.cmu:  # lookup CMU dict
                 pron = self.cmu[word][0]
             else: # predict for oov
-                pron = self.predict(word)
+                pron = ''
+                # pron = self.predict(word)
 
             prons.extend(pron)
             prons.extend([" "])
