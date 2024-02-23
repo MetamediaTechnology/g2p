@@ -146,7 +146,7 @@ class G2p(object):
         preds = [self.idx2p.get(idx, "<unk>") for idx in preds]
         return preds
 
-    def __call__(self, text):
+    def __call__(self, text, predictOOV=True):
         # preprocessing
         text = unicode(text)
         text = normalize_numbers(text)
@@ -176,7 +176,10 @@ class G2p(object):
             elif word in self.cmu:  # lookup CMU dict
                 pron = self.cmu[word][0]
             else: # predict for oov
-                pron = self.predict(word)
+                if predictOOV:
+                    pron = self.predict(word)
+                else:
+                    pron = ''
 
             prons.extend(pron)
             prons.extend([" "])
