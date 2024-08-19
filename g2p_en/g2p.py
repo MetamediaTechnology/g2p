@@ -154,19 +154,28 @@ class G2p(object):
         text = normalize_numbers(text)
         text = ''.join(char for char in unicodedata.normalize('NFD', text)
                        if unicodedata.category(char) != 'Mn')  # Strip accents
-        text = text.lower()
         text = text.replace("\n"," ")
-        text = re.sub("[^ a-z'.,?!\-]", "", text)
+        text = re.sub("[^ a-zA-Z'.,?!\-]", "", text)
         text = text.replace("i.e.", "that is")
+        text = text.replace("i.E.", "that is")
+        text = text.replace("I.e.", "that is")
+        text = text.replace("I.E.", "that is")
         text = text.replace("e.g.", "for example")
+        text = text.replace("e.G.", "for example")
+        text = text.replace("E.g.", "for example")
+        text = text.replace("E.G.", "for example")
+        persistText = text
+        text = text.lower()
 
         # tokenization
         words = tk.tokenize(text)
+        persistWords = tk.tokenize(persistText)
         tokens = pos_tag(words)  # tuples of (word, tag)
 
         # steps
         prons = []
-        for word, pos in tokens:
+        for idx, element in enumerate(tokens):
+            (word, pos) = element
             if re.search("[a-z]", word) is None:
                 pron = [word]
 
@@ -184,6 +193,7 @@ class G2p(object):
                 pron = ""
 
             stringPron = " ".join(pron)
+            originalWord = persistWords[idx]
 
             prons.append((word,stringPron))
 
