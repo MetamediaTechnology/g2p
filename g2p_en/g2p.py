@@ -180,8 +180,8 @@ class G2p(object):
             else:
                 pron = ""
 
-            prons.extend(pron)
-            prons.extend([" "])
+            prons.extend((word,pron))
+            prons.extend(None)
 
         return prons[:-1]
 
