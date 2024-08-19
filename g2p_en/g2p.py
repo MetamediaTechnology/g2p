@@ -195,7 +195,7 @@ class G2p(object):
             stringPron = " ".join(pron)
             originalWord = persistWords[idx]
 
-            prons.append((word,stringPron))
+            prons.append((originalWord,stringPron))
 
         return prons
 
