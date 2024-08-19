@@ -183,7 +183,9 @@ class G2p(object):
             else:
                 pron = ""
 
-            prons.append((word,pron))
+            stringPron = " ".join(pron)
+
+            prons.append((word,stringPron))
 
         return prons
 
