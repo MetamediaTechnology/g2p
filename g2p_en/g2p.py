@@ -151,19 +151,23 @@ class G2p(object):
     def __call__(self, text, predictOOV=True):
         # preprocessing
         text = unicode(text)
+        print('text1',text)
         text = normalize_numbers(text)
+        print('text2',text)
         text = ''.join(char for char in unicodedata.normalize('NFD', text)
                        if unicodedata.category(char) != 'Mn')  # Strip accents
+        print('text3',text)
         text = text.lower()
         text = re.sub("[^ a-z'.,?!\-]", "", text)
+        print('text4',text)
         text = text.replace("i.e.", "that is")
         text = text.replace("e.g.", "for example")
 
         # tokenization
         words = tk.tokenize(text)
-        print(words)
+        print('words ->',words)
         tokens = pos_tag(words)  # tuples of (word, tag)
-        print(tokens)
+        print('tokens ->',tokens)
 
         # steps
         prons = []
