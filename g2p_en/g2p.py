@@ -9,7 +9,6 @@ from nltk import pos_tag
 import cmudict
 import nltk
 from nltk.tokenize import TweetTokenizer
-word_tokenize = TweetTokenizer().tokenize
 import numpy as np
 import codecs
 import re
@@ -17,6 +16,9 @@ import os
 import unicodedata
 from builtins import str as unicode
 from .expand import normalize_numbers
+
+tk = TweetTokenizer()
+# word_tokenize = TweetTokenizer().tokenize
 
 try:
     nltk.data.find('taggers/averaged_perceptron_tagger.zip')
@@ -158,7 +160,7 @@ class G2p(object):
         text = text.replace("e.g.", "for example")
 
         # tokenization
-        words = word_tokenize(text)
+        words = tk.tokenize(text)
         tokens = pos_tag(words)  # tuples of (word, tag)
 
         # steps
@@ -180,8 +182,8 @@ class G2p(object):
             else:
                 pron = ""
 
-            prons.extend((word,pron))
-            prons.extend((" ",""))
+            prons.append((word,pron))
+            prons.append(None)
 
         return prons[:-1]
 

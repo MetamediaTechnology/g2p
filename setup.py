@@ -23,7 +23,7 @@ setup(
   classifiers = [],
   install_requires = [
     'numpy>=1.13.1',
-    'nltk>=3.2.4',
+    'nltk>=3.8.1',
     'inflect>=0.3.1',
     'distance>=0.1.3',
     'cmudict>=1.0.18'
