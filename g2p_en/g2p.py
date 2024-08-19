@@ -158,6 +158,7 @@ class G2p(object):
                        if unicodedata.category(char) != 'Mn')  # Strip accents
         print('text3',text)
         text = text.lower()
+        text = text.replace("\n"," ")
         text = re.sub("[^ a-z'.,?!\-]", "", text)
         print('text4',text)
         text = text.replace("i.e.", "that is")
