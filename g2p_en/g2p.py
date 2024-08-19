@@ -161,7 +161,9 @@ class G2p(object):
 
         # tokenization
         words = tk.tokenize(text)
+        print(words)
         tokens = pos_tag(words)  # tuples of (word, tag)
+        print(tokens)
 
         # steps
         prons = []
