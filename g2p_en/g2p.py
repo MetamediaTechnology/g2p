@@ -185,7 +185,7 @@ class G2p(object):
 
             prons.append((word,pron))
 
-        return prons[:-1]
+        return prons
 
 if __name__ == '__main__':
     texts = ["I have $250 in my pocket.", # number -> spell-out
