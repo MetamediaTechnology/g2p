@@ -181,7 +181,7 @@ class G2p(object):
                 pron = ""
 
             prons.extend((word,pron))
-            prons.extend(None)
+            prons.extend((" ",""))
 
         return prons[:-1]
 
