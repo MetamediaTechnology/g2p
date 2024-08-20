@@ -22,11 +22,11 @@ setup(
   keywords = ['g2p','g2p_en'], # arbitrary keywords
   classifiers = [],
   install_requires = [
-    'numpy>=1.13.1',
+    'numpy>=1.26.4',
     'nltk>=3.8.1',
-    'inflect>=0.3.1',
+    'inflect>=7.3.1',
     'distance>=0.1.3',
-    'cmudict>=1.0.18'
+    'cmudict>=1.0.28'
   ],
   license='Apache Software License',
   include_package_data=True
