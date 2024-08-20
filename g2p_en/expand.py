@@ -56,6 +56,7 @@ def _expand_ordinal(m):
 
 def _expand_number(m):
     num = int(m.group(0))
+    print('expand_number',num)
     if num > 1000 and num < 3000:
         if num == 2000:
             return 'two thousand'
