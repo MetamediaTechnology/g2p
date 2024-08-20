@@ -56,7 +56,6 @@ def _expand_ordinal(m):
 
 def _expand_number(m):
     num = int(m.group(0))
-    print('expand_number',num)
     if num > 1000 and num < 3000:
         if num == 2000:
             return 'two thousand'
@@ -71,10 +70,17 @@ def _expand_number(m):
 
 
 def normalize_numbers(text):
+    print('t1',text)
     text = re.sub(_comma_number_re, _remove_commas, text)
+    print('t2',text)
     text = re.sub(_pounds_re, r'\1 pounds', text)
+    print('t3',text)
     text = re.sub(_dollars_re, _expand_dollars, text)
+    print('t4',text)
     text = re.sub(_decimal_number_re, _expand_decimal_point, text)
+    print('t5',text)
     text = re.sub(_ordinal_re, _expand_ordinal, text)
+    print('t6',text)
     text = re.sub(_number_re, _expand_number, text)
+    print('t7',text)
     return text
