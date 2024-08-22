@@ -18,16 +18,11 @@ from builtins import str as unicode
 from .expand import normalize_numbers
 
 tk = TweetTokenizer()
-# word_tokenize = TweetTokenizer().tokenize
 
 try:
     nltk.data.find('taggers/averaged_perceptron_tagger.zip')
 except LookupError:
     nltk.download('averaged_perceptron_tagger')
-# try:
-#     nltk.data.find('corpora/cmudict.zip')
-# except LookupError:
-#     nltk.download('cmudict')
 
 dirname = os.path.dirname(__file__)
 
@@ -195,7 +190,11 @@ class G2p(object):
             stringPron = " ".join(pron)
             originalWord = persistWords[idx]
 
-            prons.append((originalWord,stringPron))
+            prons.append({
+                'word' : originalWord,
+                'pos'  : pos,
+                'pron' : stringPron
+            })
 
         return prons
 
