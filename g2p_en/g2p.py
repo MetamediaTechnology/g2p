@@ -183,6 +183,11 @@ class G2p(object):
                     pron = pron2
             elif word in self.cmu:  # lookup CMU dict
                 pron = self.cmu[word][0]
+            elif word.split("-")[0] in self.cmu:
+                #partial word
+                wg = word.split("-")
+                for w in wg:
+                    pron+=self.cmu[w][0]
             elif predictOOV: # predict for oov
                 pron = self.predict(word)
             else:
