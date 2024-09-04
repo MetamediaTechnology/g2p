@@ -171,6 +171,7 @@ class G2p(object):
         prons = []
         for idx, element in enumerate(tokens):
             (word, pos) = element
+            print(word)
             if re.search("[a-z]", word) is None:
                 pron = [word]
 
