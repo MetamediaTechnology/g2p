@@ -188,13 +188,13 @@ class G2p(object):
                 wStack = []
                 for w in word.split("-"):
                     if w in self.cmu:
-                        print(w,self.cmu[w][0])
                         wStack.append(self.cmu[w][0])
-                pron = " ".join(wStack)
+                print(wStack)
+                pron = wStack
             elif predictOOV: # predict for oov
                 pron = self.predict(word)
             else:
-                pron = ""
+                pron = []
 
             stringPron = " ".join(pron)
             originalWord = persistWords[idx]
