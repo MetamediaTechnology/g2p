@@ -185,9 +185,11 @@ class G2p(object):
                 pron = self.cmu[word][0]
             elif word.split("-")[0] in self.cmu:
                 #partial word
+                wStack = []
                 for w in word.split("-"):
                     if w in self.cmu:
-                        pron+=self.cmu[w][0]
+                        wStack.append(self.cmu[w][0])
+                pron = " ".join(wStack)
             elif predictOOV: # predict for oov
                 pron = self.predict(word)
             else:
