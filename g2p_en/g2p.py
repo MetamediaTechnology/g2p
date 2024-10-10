@@ -150,7 +150,8 @@ class G2p(object):
         text = ''.join(char for char in unicodedata.normalize('NFD', text)
                        if unicodedata.category(char) != 'Mn')  # Strip accents
         text = text.replace("\n"," ")
-        text = re.sub("[^ a-zA-Z'.,?!\-]", "", text)
+        text = re.sub("[^ a-zA-Z'.,?!-]", " ", text)
+        text = re.sub("\s+", " ", text)
         text = text.replace("i.e.", "that is")
         text = text.replace("i.E.", "that is")
         text = text.replace("I.e.", "that is")
@@ -201,7 +202,8 @@ class G2p(object):
             prons.append({
                 'word' : originalWord,
                 'pos'  : pos,
-                'pron' : stringPron
+                'pron' : stringPron,
+                'words': words[idx] if len(words) > idx else None,
             })
 
         return prons
@@ -215,4 +217,3 @@ if __name__ == '__main__':
     for text in texts:
         out = g2p(text)
         print(out)
-
