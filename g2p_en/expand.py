@@ -18,7 +18,9 @@ _decimal_number_re = re.compile(r'([0-9]+\.[0-9]+)')
 _pounds_re = re.compile(r'£([0-9\,]*[0-9]+)')
 _dollars_re = re.compile(r'\$([0-9\.\,]*[0-9]+)')
 _ordinal_re = re.compile(r'[0-9]+(st|nd|rd|th)')
-_number_re = re.compile(r'[0-9]+')
+_number_re = re.compile(r'[0-9]+s*')
+_final_s = re.compile(r's$')
+_final_y = re.compile(r'y$')
 
 
 def _remove_commas(m):
@@ -55,19 +57,27 @@ def _expand_ordinal(m):
 
 
 def _expand_number(m):
-    num = int(m.group(0))
+    group_text = m.group(0)
+    has_s = _final_s.search(group_text)
+    if has_s:
+      group_text = re.sub(_final_s, '', group_text)
+    
+    num = int(group_text)
     if num > 1000 and num < 3000:
         if num == 2000:
-            return 'two thousand'
+            final_text = 'two thousand'
         elif num > 2000 and num < 2010:
-            return 'two thousand ' + _inflect.number_to_words(num % 100)
+            final_text = 'two thousand ' + _inflect.number_to_words(num % 100)
         elif num % 100 == 0:
-            return _inflect.number_to_words(num // 100) + ' hundred'
+            final_text = _inflect.number_to_words(num // 100) + ' hundred'
         else:
-            return _inflect.number_to_words(num, andword='', zero='oh', group=2).replace(', ', ' ')
+            final_text = _inflect.number_to_words(num, andword='', zero='oh', group=2).replace(', ', ' ')
     else:
-        return _inflect.number_to_words(num, andword='')
-
+        final_text = _inflect.number_to_words(num, andword='')
+    
+    if has_s:
+        final_text = re.sub(_final_y, 'ie', final_text) + 's'
+    return final_text
 
 def normalize_numbers(text):
     text = re.sub(_comma_number_re, _remove_commas, text)
