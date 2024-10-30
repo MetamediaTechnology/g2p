@@ -15,7 +15,7 @@ import re
 import os
 import unicodedata
 from builtins import str as unicode
-from .expand import normalize_numbers
+from .expand import normalize_numbers, normalize_numbers_before_tokenized
 
 tk = TweetTokenizer()
 
@@ -34,17 +34,6 @@ def construct_homograph_dictionary():
         headword, pron1, pron2, pos1 = line.strip().split("|")
         homograph2features[headword.lower()] = (pron1.split(), pron2.split(), pos1)
     return homograph2features
-
-# def segment(text):
-#     '''
-#     Splits text into `tokens`.
-#     :param text: A string.
-#     :return: A list of tokens (string).
-#     '''
-#     print(text)
-#     text = re.sub('([.,?!]( |$))', r' \1', text)
-#     print(text)
-#     return text.split()
 
 class G2p(object):
     def __init__(self):
@@ -142,24 +131,8 @@ class G2p(object):
 
         preds = [self.idx2p.get(idx, "<unk>") for idx in preds]
         return preds
-
-    def __call__(self, text, predictOOV=True):
-        # preprocessing
-        text = unicode(text)
-        text = normalize_numbers(text)
-        text = ''.join(char for char in unicodedata.normalize('NFD', text)
-                       if unicodedata.category(char) != 'Mn')  # Strip accents
-        text = text.replace("\n"," ")
-        text = re.sub("[^ a-zA-Z'.,?!-]", " ", text)
-        text = re.sub("\s+", " ", text)
-        text = text.replace("i.e.", "that is")
-        text = text.replace("i.E.", "that is")
-        text = text.replace("I.e.", "that is")
-        text = text.replace("I.E.", "that is")
-        text = text.replace("e.g.", "for example")
-        text = text.replace("e.G.", "for example")
-        text = text.replace("E.g.", "for example")
-        text = text.replace("E.G.", "for example")
+    
+    def _extract_reading(self, text, predictOOV=True):
         persistText = text
         text = text.lower()
 
@@ -170,34 +143,53 @@ class G2p(object):
 
         # steps
         prons = []
+        tmp_element = None
         for idx, element in enumerate(tokens):
             (word, pos) = element
-            # print(word)
-            if re.search("[a-z]", word) is None:
-                pron = [word]
 
-            elif word in self.homograph2features:  # Check homograph
-                pron1, pron2, pos1 = self.homograph2features[word]
+            if idx + 1 < len(tokens) and word in ['$','£'] and re.search(r'^[0-9]+', tokens[idx + 1][0]):
+                tmp_element = word
+                continue
+            
+            originalWord = persistWords[idx]
+            
+            if tmp_element != None:
+                word = tmp_element + word
+                originalWord = tmp_element + originalWord
+                tmp_element = None
+            
+            word_normalized = normalize_numbers(word)
+            print(word, word_normalized)
+
+            if re.search("[a-z]", word_normalized) is None:
+                pron = [word_normalized]
+
+            elif word_normalized in self.homograph2features:  # Check homograph
+                pron1, pron2, pos1 = self.homograph2features[word_normalized]
                 if pos.startswith(pos1):
                     pron = pron1
                 else:
                     pron = pron2
-            elif word in self.cmu:  # lookup CMU dict
-                pron = self.cmu[word][0]
-            elif word.split("-")[0] in self.cmu:
+            elif word_normalized in self.cmu:  # lookup CMU dict
+                pron = self.cmu[word_normalized][0]
+            elif word_normalized.split("-")[0] in self.cmu:
                 #partial word
                 wStack = []
-                for w in word.split("-"):
+                for w in word_normalized.split("-"):
                     if w in self.cmu:
                         wStack += self.cmu[w][0]
                 pron = wStack
+            elif word != word_normalized:
+                # normalized
+                inner_prons = self._extract_reading(word_normalized, predictOOV)
+                pron = [p['pron'] for p in inner_prons if p['pron'] != p['word']]
+                
             elif predictOOV: # predict for oov
-                pron = self.predict(word)
+                pron = self.predict(word_normalized)
             else:
                 pron = []
 
             stringPron = " ".join(pron)
-            originalWord = persistWords[idx]
 
             prons.append({
                 'word' : originalWord,
@@ -205,6 +197,20 @@ class G2p(object):
                 'pron' : stringPron,
                 'words': words[idx] if len(words) > idx else None,
             })
+
+        return prons
+    
+    def __call__(self, text, predictOOV=True):
+        # preprocessing
+        text = unicode(text)
+        text = normalize_numbers_before_tokenized(text)
+        text = ''.join(char for char in unicodedata.normalize('NFD', text)
+                       if unicodedata.category(char) != 'Mn')  # Strip accents
+        text = text.replace("\n"," ")
+        text = re.sub("[^ 0-9a-zA-Z'.,?!-£$]", " ", text)
+        text = re.sub("\s+", " ", text)
+
+        prons = self._extract_reading(text, predictOOV)
 
         return prons
 
