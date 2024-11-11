@@ -159,7 +159,6 @@ class G2p(object):
                 tmp_element = None
             
             word_normalized = normalize_numbers(word)
-            print(word, word_normalized)
 
             if re.search("[a-z]", word_normalized) is None:
                 pron = [word_normalized]
